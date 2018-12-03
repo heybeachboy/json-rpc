@@ -37,4 +37,5 @@ type JsonRpcRequestDecodeIf interface {
 }
 
 type JsonRpcResponseEncodeIf interface {
+
 }

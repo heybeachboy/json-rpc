@@ -1,10 +1,9 @@
-package main
+package json_rpc
 
 import (
 	"fmt"
 	"reflect"
 )
-
 type CalculationsService struct {}
 
 func (c * CalculationsService)Sum(args ...int)(int) {

@@ -1,7 +1,5 @@
 package json_rpc
 
-import "errors"
-
 /**
  define error code
  */
@@ -11,21 +9,33 @@ const (
 	InvalidRequestCode = -32600
 	MethodNotFoundCode = -32601
 	InvalidParamsCode  = -32602
-	InterbalErrorCode  = -32603
+	InternalErrorCode  = -32603
 	ServerErrorCode    = -32000
 )
-
 /**
- *define error message
+ * get json rpc error message
  */
-var (
-	ParseErrorMessage     = errors.New("parse error")
-	InvalidRequestMessage = errors.New("invalid request")
-	MethodNotFoundMessage = errors.New("method not found")
-	InvalidParamsMesssage = errors.New("invalid params")
-	InternalErrorMessage  = errors.New("internal error")
-	ServerErrorMesssage   = errors.New("server error")
-)
+ func GetErrorMessage(errorCode int)(string) {
+	 switch errorCode {
+	 case ParseErrorCode:
+	 	return "Invalid request"
+	 case InvalidRequestCode:
+	 	return "Invalid request"
+	 case MethodNotFoundCode:
+	 	return "Method not found"
+	 case InvalidParamsCode:
+	 	return "Invalid params"
+	 case InternalErrorCode:
+	 	return "Internal error"
+	 case ServerErrorCode:
+	 	return "Service"
+	 default:
+		return "Unknown error"
+	 }
+
+ }
+
+
 
 
 
