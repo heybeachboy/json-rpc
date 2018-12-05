@@ -33,8 +33,11 @@ type JsonRpcExceptionResponse struct {
 	Error   JsonError
 }
 
+
 type JsonRpcRequestDecodeIf interface {
+
 }
+
 
 type JsonRpcResponseEncodeIf interface {
 
