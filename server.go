@@ -37,12 +37,14 @@ func (j *JsonRpcService) RegisterService(serviceName string, service interface{}
 	resp := j.reflectCallback(svr)
 
 	if !resp {
-		fmt.Errorf("register service  %s : method is null",svr.ServerName)
+		fmt.Errorf("register service  %s : method is null", svr.ServerName)
 		return
 	}
 	j.services[svr.ServerName] = &svr
 
 }
+
+//func(j *JsonRpcService)
 
 /**
  *reflect service callback function
@@ -64,12 +66,15 @@ func (j *JsonRpcService) reflectCallback(service Service) (bool) {
 			continue
 		}
 		count++
+
+		if j.callbacks == nil {
+			j.callbacks = make(CallbackMap)
+		}
 		j.callbacks[c.MethodName] = &c
 	}
 	if count > 0 {
 		return true
 	}
-
 	return false
 
 }
@@ -101,6 +106,7 @@ func FormatName(name string) (string) {
 
 }
 
-func GetCallbackKey(service, method string) (string) {
-	return service + `.` + method
-}
+
+
+
+
