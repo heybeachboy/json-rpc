@@ -1,8 +1,15 @@
 package json_rpc
 
+import "encoding/json"
+
 /**
  * parse json string
  */
+
+type JsonRpc struct {
+	 JsonDecode json.Decoder
+	 JsonEncode json.Encoder
+}
 
 /**
 * json rpc request head
