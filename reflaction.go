@@ -1,9 +1,5 @@
 package json_rpc
 
-import (
-	"fmt"
-	"reflect"
-)
 type CalculationsService struct {}
 
 func (c * CalculationsService)Sum(args ...int)(int) {
@@ -55,7 +51,7 @@ func CreateAStudent(id, age int,name string)(Student) {
 
 
 
-func main() {
+/*func main() {
 
 	 fy := reflect.TypeOf(CalculationsMinus)
 	 fv := reflect.ValueOf(CalculationsMinus)
@@ -93,12 +89,4 @@ func main() {
 	 calParam[3] =  reflect.ValueOf(10)
 	 fmt.Println("method name :",calv.MethodByName("Sum").Call(calParam)[0].Interface())
 	 fmt.Println("method name :",calv.MethodByName("Multiply").Call(calParam)[0].Interface())
-
-
-
-
-
-
-
-
-}
+}*/

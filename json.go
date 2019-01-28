@@ -1,15 +1,9 @@
 package json_rpc
 
-import "encoding/json"
-
-/**
- * parse json string
- */
-
-type JsonRpc struct {
-	 JsonDecode json.Decoder
-	 JsonEncode json.Encoder
-}
+import (
+	"encoding/json"
+	"io"
+)
 
 /**
 * json rpc request head
@@ -22,30 +16,97 @@ type JsonRpcRequest struct {
 	Params  interface{} `json:"params"`
 }
 
+/**
+ *json rpc error information
+ */
 type JsonError struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
 
+/**
+ *json rpc successful of response
+ */
 type JsonRpcSuccessResponse struct {
 	Id      interface{}
 	JsonRpc string
 	Result  interface{}
 }
 
+/**
+ *json rpc error of response
+ */
 type JsonRpcExceptionResponse struct {
 	Id      interface{}
 	JsonRpc string
 	Error   JsonError
 }
 
-
 type JsonRpcRequestDecodeIf interface {
+}
+
+type JsonRpcResponseEncodeIf interface {
+}
+
+/**
+ * parse json string
+ */
+
+type JsonRpc struct {
+	JsonDecode func(v interface{}) error
+	JsonEncode func(v interface{}) error
+	Rw         io.ReadWriteCloser
+}
+
+/**
+ *init json-rpc service
+ */
+
+func NewJsonRpc(io io.ReadWriteCloser) (*JsonRpc) {
+	return &JsonRpc{json.NewDecoder(io).Decode, json.NewEncoder(io).Encode, io}
 
 }
 
+/**
+ *
+ */
 
-type JsonRpcResponseEncodeIf interface {
+func (j *JsonRpc) ReadJsonRpcRequestHeaders() ([]JsonRpcRequest, error) {
+	var RequestBytes json.RawMessage
+	err := j.JsonDecode(&RequestBytes)
 
+	if err != nil {
+		return nil, err
+	}
+
+	return  j.parseJsonPrcRequestHead(RequestBytes)
+
+}
+
+/**
+ *
+ */
+func (j *JsonRpc) parseJsonPrcRequestHead(data json.RawMessage)([]JsonRpcRequest,error) {
+	 var request []JsonRpcRequest
+	 err := json.Unmarshal(data,&request[0])
+
+	 if err != nil {
+	 	return nil, err
+	 }
+
+	 return request, nil
+
+}
+
+/**
+ *replay
+ */
+func (j *JsonRpc) WriteJsonRpcResponse(resp interface{})(error) {
+
+	return j.JsonEncode(resp)
+}
+
+func (j *JsonRpc) Destroy() {
+	j.Rw.Close()
 }
