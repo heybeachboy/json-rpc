@@ -43,11 +43,7 @@ type JsonRpcExceptionResponse struct {
 	Error   JsonError
 }
 
-type JsonRpcRequestDecodeIf interface {
-}
 
-type JsonRpcResponseEncodeIf interface {
-}
 
 /**
  * parse json string
@@ -63,7 +59,7 @@ type JsonRpc struct {
  *init json-rpc service
  */
 
-func NewJsonRpc(io io.ReadWriteCloser) (*JsonRpc) {
+func NewJsonRpc(io *httpReaderWriterAndCloser) (*JsonRpc) {
 	return &JsonRpc{json.NewDecoder(io).Decode, json.NewEncoder(io).Encode, io}
 
 }
@@ -105,6 +101,31 @@ func (j *JsonRpc) parseJsonPrcRequestHead(data json.RawMessage)([]JsonRpcRequest
 func (j *JsonRpc) WriteJsonRpcResponse(resp interface{})(error) {
 
 	return j.JsonEncode(resp)
+}
+
+/**
+ *create error response
+ */
+func (j *JsonRpc) CreateExceptionResponse(reqId interface{}, code int)(JsonRpcExceptionResponse) {
+	var resp JsonRpcExceptionResponse
+	resp.Id = reqId
+	resp.JsonRpc = JsonRpcVersion
+	resp.Error.Message = GetErrorMessage(code)
+	return resp
+}
+
+/**
+ *create default error response
+ */
+
+func (j *JsonRpc)CreateDefaultExceptionResponse(reqId interface{}, code int, message string) (JsonRpcExceptionResponse) {
+	var resp JsonRpcExceptionResponse
+	resp.Id = reqId
+	resp.JsonRpc = JsonRpcVersion
+	resp.Error.Code = code
+	resp.Error.Message = message
+	return resp
+
 }
 
 func (j *JsonRpc) Destroy() {

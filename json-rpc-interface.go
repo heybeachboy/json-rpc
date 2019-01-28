@@ -31,6 +31,15 @@ type MethodMap map[string]*Callback // service method map
 type CallbackMap map[string]*Callback // service implement method map
 
 /**
+ *
+ */
+type JsonRpcIf interface {
+	 ReadJsonRpcRequestHeaders()([]JsonRpcRequest,error)
+	 WriteJsonRpcResponse(interface{})(error)
+	 Destroy()
+}
+
+/**
  *  error interface
  */
 type Error interface {
@@ -38,17 +47,6 @@ type Error interface {
 	 ErrorId()(int)
 }
 
-/**
- *json format handle struct
- */
-type JsonRpcIf interface {
-	 ReadRequestHead()(JsonRpcRequest)
-	 CreateResponse(id interface{}, reply interface{}) interface{}
-	 CreateErrorResponse(id interface{}, err Error) interface{}
-	 CreateErrorResponseWithInfo(id interface{}, err Error, info interface{}) interface{}
-	 CreateNotification(id, namespace string, event interface{}) interface{}
-	 Write(msg interface{}) error
-	 Close()
-}
+
 
 

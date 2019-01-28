@@ -12,29 +12,29 @@ const (
 	InternalErrorCode  = -32603
 	ServerErrorCode    = -32000
 )
+
 /**
  * get json rpc error message
  */
- func GetErrorMessage(errorCode int)(string) {
-	 switch errorCode {
-	 case ParseErrorCode:
-	 	return "Invalid request"
-	 case InvalidRequestCode:
-	 	return "Invalid request"
-	 case MethodNotFoundCode:
-	 	return "Method not found"
-	 case InvalidParamsCode:
-	 	return "Invalid params"
-	 case InternalErrorCode:
-	 	return "Internal error"
-	 case ServerErrorCode:
-	 	return "Service"
-	 default:
+func GetErrorMessage(errorCode int) (string) {
+	switch errorCode {
+	case ParseErrorCode:
+		return "Invalid request"
+	case InvalidRequestCode:
+		return "Invalid request"
+	case MethodNotFoundCode:
+		return "Method not found"
+	case InvalidParamsCode:
+		return "Invalid params"
+	case InternalErrorCode:
+		return "Internal error"
+	case ServerErrorCode:
+		return "Service"
+	default:
 		return "Unknown error"
-	 }
+	}
 
- }
-
+}
 
 
 
