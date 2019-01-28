@@ -80,6 +80,21 @@ func (j *JsonRpcService) reflectCallback(service Service) (bool) {
 }
 
 /**
+ *handle json rpc request
+ */
+
+func (j *JsonRpcService) ServerHandleRequest(json JsonRpcIf) {
+	defer json.Destroy()
+     req,err := json.ReadJsonRpcRequestHeaders()
+
+     if err != nil || len(req) < 1 {
+     	json.WriteJsonRpcResponse(json.CreateExceptionResponse(123,-32700))
+	 }
+     json.WriteJsonRpcResponse(req[0])
+
+     }
+
+/**
  *
  */
 func (j *JsonRpcService) judgeServiceIsExist(serviceName string) (bool) {

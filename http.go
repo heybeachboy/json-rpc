@@ -29,7 +29,7 @@ func (j *JsonRpcService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	content := io.LimitReader(r.Body,MAX_REQUEST_LIMIT)
 
-
+    w.Header().Set("Content-Type",CONTENT_TYPE)
 	jsonParse := NewJsonRpc(&httpReaderWriterAndCloser{content,w,r.Body})
 
 	j.ServerHandleRequest(jsonParse)
@@ -37,16 +37,7 @@ func (j *JsonRpcService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/**
- *handle json rpc request
- */
 
-func (j *JsonRpcService) ServerHandleRequest(json JsonRpcIf) {
-
-
-
-
-}
 
 /**
  *check request

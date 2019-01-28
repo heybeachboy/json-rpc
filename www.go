@@ -1,6 +1,6 @@
 package json_rpc
 
-import (
+/*import (
 	"encoding/json"
 	"fmt"
 	"github.com/name5566/leaf/log"
@@ -70,4 +70,4 @@ func main() {
 		log.Fatal("http server exception : %s", err.Error())
 	}
 
-}
+}*/

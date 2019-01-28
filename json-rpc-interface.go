@@ -36,6 +36,8 @@ type CallbackMap map[string]*Callback // service implement method map
 type JsonRpcIf interface {
 	 ReadJsonRpcRequestHeaders()([]JsonRpcRequest,error)
 	 WriteJsonRpcResponse(interface{})(error)
+	 CreateExceptionResponse(reqId interface{}, code int)(JsonRpcExceptionResponse)
+	 CreateDefaultExceptionResponse(reqId interface{}, code int, message string) (JsonRpcExceptionResponse)
 	 Destroy()
 }
 

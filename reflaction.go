@@ -1,6 +1,6 @@
 package json_rpc
 
-type CalculationsService struct {}
+/*type CalculationsService struct {}
 
 func (c * CalculationsService)Sum(args ...int)(int) {
 
@@ -43,10 +43,12 @@ type Student struct {
  /**
   * create a student
   */
+
+/*
 func CreateAStudent(id, age int,name string)(Student) {
 	return Student{id,name,age}
 
-}
+} */
 
 
 
