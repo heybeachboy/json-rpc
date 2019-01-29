@@ -13,13 +13,14 @@ const (
 	ServerErrorCode    = -32000
 )
 
+
 /**
  * get json rpc error message
  */
 func GetErrorMessage(errorCode int) (string) {
 	switch errorCode {
 	case ParseErrorCode:
-		return "Invalid request"
+		return "Parse error"
 	case InvalidRequestCode:
 		return "Invalid request"
 	case MethodNotFoundCode:

@@ -11,9 +11,9 @@ import (
  */
 
 type JsonRpcService struct {
-	services  ServiceMap
-	methods   MethodMap
-	callbacks CallbackMap
+	 services  ServiceMap
+	 methods   MethodMap
+	 callbacks CallbackMap
 }
 
 /**
@@ -57,7 +57,8 @@ func (j *JsonRpcService) reflectCallback(service Service) (bool) {
 		var c Callback
 		method := service.ServiceTyp.Method(i)
 		mTyp := method.Type
-		name := FormatName(mTyp.Name())
+		name := FormatName(method.Name)
+		c.ServiceName = service.ServerName
 		c.Method = method
 		c.MethodTyp = mTyp
 		c.MethodName = service.ServerName + `.` + name
@@ -85,14 +86,65 @@ func (j *JsonRpcService) reflectCallback(service Service) (bool) {
 
 func (j *JsonRpcService) ServerHandleRequest(json JsonRpcIf) {
 	defer json.Destroy()
-     req,err := json.ReadJsonRpcRequestHeaders()
+	req, err := json.ReadJsonRpcRequestHeaders()
 
-     if err != nil || len(req) < 1 {
-     	json.WriteJsonRpcResponse(json.CreateExceptionResponse(123,-32700))
-	 }
-     json.WriteJsonRpcResponse(req[0])
+	if err != nil || len(req) < 1 {
+		json.WriteJsonRpcResponse(json.CreateExceptionResponse(123, -32700, err))
+		return
+	}
 
-     }
+	json.WriteJsonRpcResponse(req[0])
+
+}
+
+/**
+ *
+
+
+func (j *JsonRpcService) checkSingleRequest(reqList []JsonRpcRequest) (bool, string) {
+
+	for _, req := range reqList {
+
+		if !j.checkServiceAndMethod(req.Method) {
+
+		}
+
+	}
+
+	return true, ""
+
+}* /
+
+func (j *JsonRpcService) parseServiceAndMethod(name string)(status bool,server string,method string) {
+	list :=strings.Split(name,`_`)
+
+	if len(list)  < 2 {
+		return false,name,list[0]
+	}
+
+	if len(list) == 2 {
+		return  true,list[0],list[1]
+	}
+
+	return  false,name,list[0]
+
+
+}
+
+func (j *JsonRpcService) checkService(serviceName string) (bool) {
+
+	return true
+
+}
+
+func (j *JsonRpcService) checkMethod(methodName string) (bool) {
+	return true
+}
+
+func (j *JsonRpcService) checkInParameter() (bool) {
+	return true
+
+}
 
 /**
  *
@@ -120,10 +172,3 @@ func FormatName(name string) (string) {
 	return strings.ToLower(strings.Trim(name, " "))
 
 }
-
-
-
-
-
-
-

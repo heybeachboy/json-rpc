@@ -20,9 +20,9 @@ type JsonRpcRequest struct {
  *json rpc error information
  */
 type JsonError struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Code    int         `json:"Code"`
+	Message string      `json:"Message"`
+	Data    interface{} `json:"Data"`
 }
 
 /**
@@ -84,14 +84,14 @@ func (j *JsonRpc) ReadJsonRpcRequestHeaders() ([]JsonRpcRequest, error) {
  *
  */
 func (j *JsonRpc) parseJsonPrcRequestHead(data json.RawMessage)([]JsonRpcRequest,error) {
-	 var request []JsonRpcRequest
-	 err := json.Unmarshal(data,&request[0])
+	 var request JsonRpcRequest
+	 err := json.Unmarshal(data,&request)
 
 	 if err != nil {
 	 	return nil, err
 	 }
 
-	 return request, nil
+	 return []JsonRpcRequest{request}, nil
 
 }
 
@@ -106,11 +106,13 @@ func (j *JsonRpc) WriteJsonRpcResponse(resp interface{})(error) {
 /**
  *create error response
  */
-func (j *JsonRpc) CreateExceptionResponse(reqId interface{}, code int)(JsonRpcExceptionResponse) {
+func (j *JsonRpc) CreateExceptionResponse(reqId interface{}, code int, err error)(JsonRpcExceptionResponse) {
 	var resp JsonRpcExceptionResponse
 	resp.Id = reqId
 	resp.JsonRpc = JsonRpcVersion
 	resp.Error.Message = GetErrorMessage(code)
+	resp.Error.Code = code
+	resp.Error.Data = err
 	return resp
 }
 
