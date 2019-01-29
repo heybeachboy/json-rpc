@@ -2,7 +2,7 @@ package json_rpc
 
 import "reflect"
 
-const SERVICEANDMETHODSEPARATOR = `_`
+
 
 /**
  *save service
@@ -37,6 +37,7 @@ type CallbackMap map[string]*Callback // service implement method map
 type JsonRpcIf interface {
 	 ReadJsonRpcRequestHeaders()([]JsonRpcRequest,error)
 	 WriteJsonRpcResponse(interface{})(error)
+	 CreateSuccessResponse(reqId interface{}, data interface{}) (JsonRpcSuccessResponse)
 	 CreateExceptionResponse(reqId interface{}, code int,err error)(JsonRpcExceptionResponse)
 	 CreateDefaultExceptionResponse(reqId interface{}, code int, message string) (JsonRpcExceptionResponse)
 	 Destroy()

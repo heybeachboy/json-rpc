@@ -10,10 +10,10 @@ import (
 */
 
 type JsonRpcRequest struct {
-	Id      interface{} `json:"id"`
-	JsonRpc string      `json:"jsonrpc"`
-	Method  string      `json:"method"`
-	Params  interface{} `json:"params"`
+	Id      interface{}   `json:"id"`
+	JsonRpc string        `json:"jsonrpc"`
+	Method  string        `json:"method"`
+	Params  []interface{} `json:"params"`
 }
 
 /**
@@ -42,8 +42,6 @@ type JsonRpcExceptionResponse struct {
 	JsonRpc string
 	Error   JsonError
 }
-
-
 
 /**
  * parse json string
@@ -76,43 +74,51 @@ func (j *JsonRpc) ReadJsonRpcRequestHeaders() ([]JsonRpcRequest, error) {
 		return nil, err
 	}
 
-	return  j.parseJsonPrcRequestHead(RequestBytes)
+	return j.parseJsonPrcRequestHead(RequestBytes)
 
 }
 
 /**
  *
  */
-func (j *JsonRpc) parseJsonPrcRequestHead(data json.RawMessage)([]JsonRpcRequest,error) {
-	 var request JsonRpcRequest
-	 err := json.Unmarshal(data,&request)
+func (j *JsonRpc) parseJsonPrcRequestHead(data json.RawMessage) ([]JsonRpcRequest, error) {
+	var request JsonRpcRequest
+	err := json.Unmarshal(data, &request)
 
-	 if err != nil {
-	 	return nil, err
-	 }
+	if err != nil {
+		return nil, err
+	}
 
-	 return []JsonRpcRequest{request}, nil
+	return []JsonRpcRequest{request}, nil
 
 }
 
 /**
  *replay
  */
-func (j *JsonRpc) WriteJsonRpcResponse(resp interface{})(error) {
+func (j *JsonRpc) WriteJsonRpcResponse(resp interface{}) (error) {
 
 	return j.JsonEncode(resp)
+}
+
+func (j *JsonRpc) CreateSuccessResponse(reqId interface{}, data interface{}) (JsonRpcSuccessResponse) {
+	var resp JsonRpcSuccessResponse
+	resp.JsonRpc = JsonRpcVersion
+	resp.Id = reqId
+	resp.Result = data
+	return resp
 }
 
 /**
  *create error response
  */
-func (j *JsonRpc) CreateExceptionResponse(reqId interface{}, code int, err error)(JsonRpcExceptionResponse) {
+func (j *JsonRpc) CreateExceptionResponse(reqId interface{}, code int, err error) (JsonRpcExceptionResponse) {
 	var resp JsonRpcExceptionResponse
 	resp.Id = reqId
 	resp.JsonRpc = JsonRpcVersion
 	resp.Error.Message = GetErrorMessage(code)
 	resp.Error.Code = code
-	resp.Error.Data = err
+	resp.Error.Data = err.Error()
 	return resp
 }
 
@@ -120,7 +126,7 @@ func (j *JsonRpc) CreateExceptionResponse(reqId interface{}, code int, err error
  *create default error response
  */
 
-func (j *JsonRpc)CreateDefaultExceptionResponse(reqId interface{}, code int, message string) (JsonRpcExceptionResponse) {
+func (j *JsonRpc) CreateDefaultExceptionResponse(reqId interface{}, code int, message string) (JsonRpcExceptionResponse) {
 	var resp JsonRpcExceptionResponse
 	resp.Id = reqId
 	resp.JsonRpc = JsonRpcVersion
