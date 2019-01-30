@@ -10,7 +10,11 @@ import (
 )
 
 /**
-* json rpc request head
+ *@auth Mr.Zhou leon
+ *@mail zhouletian1234@live.com
+ *@date 2018-12-15
+ * parse json string
+ * json rpc request head
 */
 
 type JsonRpcRequest struct {
@@ -48,12 +52,7 @@ type JsonRpcExceptionResponse struct {
 }
 
 
-/**
- *@auth Mr.Zhou leon
- *@mail zhouletian1234@live.com
- *@date 2018-12-15
- * parse json string
- */
+
 
 type JsonRpc struct {
 	JsonDecode func(v interface{}) error
