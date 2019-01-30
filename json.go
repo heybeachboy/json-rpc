@@ -47,7 +47,11 @@ type JsonRpcExceptionResponse struct {
 	Error   JsonError
 }
 
+
 /**
+ *@auth Mr.Zhou leon
+ *@mail zhouletian1234@live.com
+ *@date 2018-12-15
  * parse json string
  */
 

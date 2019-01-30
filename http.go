@@ -7,6 +7,11 @@ import (
 	"net/http"
 )
 
+/**
+ *@auth Mr.Zhou leon
+ *@mail zhouletian1234@live.com
+ *@date 2018-12-15
+ */
 const (
 	MAX_REQUEST_LIMIT = 1024
 	CONTENT_TYPE      = `application/json`

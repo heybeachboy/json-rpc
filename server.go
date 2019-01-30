@@ -10,6 +10,10 @@ import (
 const SERVICEANDMETHODSEPARATOR = `_`
 
 /**
+ *@auth Mr.Zhou leon
+ *@mail zhouletian1234@live.com
+ *@date 2018-12-15
+
  * json rpc service implements
  */
 

@@ -1,6 +1,10 @@
 package json_rpc
 
 /**
+ *@auth Mr.Zhou leon
+ *@mail zhouletian1234@live.com
+ *@date 2018-12-15
+/**
  define error code
  */
 const (
