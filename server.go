@@ -132,8 +132,9 @@ func (j *JsonRpcService) ServerHandleRequest(json JsonRpcIf) {
 		return
 
 	}
-	args = append(args,callback.MethodVal)
-	resp, err := j.CallMethod(callback, args)
+	newArgs := []reflect.Value{callback.MethodVal}
+	newArgs = append(newArgs,args...)
+	resp, err := j.CallMethod(callback, newArgs)
 
 	if err != nil {
 		json.WriteJsonRpcResponse(json.CreateExceptionResponse(req[0].Id, -32601, err))
@@ -191,11 +192,7 @@ func (j *JsonRpcService) ParseRpcRequestArgument(params []interface{}) ([]reflec
  *call method
  */
 func (j *JsonRpcService) CallMethod(method *Callback, args []reflect.Value) (interface{}, error) {
-	fmt.Println(j.services,j.callbacks)
-	fmt.Println(args)
-	fmt.Println("args size :",method.Method.Type.NumIn())
 	returnVal := method.Method.Func.Call(args)
-
 	if len(returnVal) == 0 {
 		return nil, errors.New(fmt.Sprintf("call callback failed : %s", method.MethodName))
 

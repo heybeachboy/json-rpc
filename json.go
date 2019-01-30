@@ -14,10 +14,10 @@ import (
 */
 
 type JsonRpcRequest struct {
-	Id      interface{}   `json:"id"`
-	JsonRpc string        `json:"jsonrpc"`
-	Method  string        `json:"method"`
-	Params  interface{} `json:"params"`
+	Id      interface{}
+	JsonRpc string
+	Method  string
+	Params  json.RawMessage
 }
 
 /**
@@ -92,17 +92,17 @@ func (j *JsonRpc) parseJsonPrcRequestHead(data json.RawMessage) ([]JsonRpcReques
 	if err != nil {
 		return nil, err
 	}
-
 	return []JsonRpcRequest{request}, nil
 
 }
 
 func (j *JsonRpc) ParseRequestArguments(argTypes []reflect.Type, params interface{}) ([]reflect.Value,error) {
-	if args, ok := params.(json.RawMessage); !ok {
+	args, ok := params.(json.RawMessage)
+	if !ok{
 		return nil, errors.New("Invalid params supplied")
-	} else {
-		return j.parsePositionalArguments(args, argTypes)
 	}
+	return j.parsePositionalArguments(args, argTypes)
+
 }
 
 func (j *JsonRpc)parsePositionalArguments(rawArgs json.RawMessage, types []reflect.Type) ([]reflect.Value, error) {
@@ -190,5 +190,5 @@ func (j *JsonRpc) CreateDefaultExceptionResponse(reqId interface{}, code int, me
 }
 
 func (j *JsonRpc) Destroy() {
-	j.Rw.Close()
+	 j.Rw.Close()
 }
