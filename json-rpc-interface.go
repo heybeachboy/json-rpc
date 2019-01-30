@@ -40,6 +40,7 @@ type JsonRpcIf interface {
 	 CreateSuccessResponse(reqId interface{}, data interface{}) (JsonRpcSuccessResponse)
 	 CreateExceptionResponse(reqId interface{}, code int,err error)(JsonRpcExceptionResponse)
 	 CreateDefaultExceptionResponse(reqId interface{}, code int, message string) (JsonRpcExceptionResponse)
+	 ParseRequestArguments(argTypes []reflect.Type, params interface{}) ([]reflect.Value,error)
 	 Destroy()
 }
 

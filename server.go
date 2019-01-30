@@ -63,7 +63,9 @@ func (j *JsonRpcService) reflectCallback(service Service) (bool) {
 		name := FormatName(method.Name)
 		c.ServiceName = service.ServerName
 		c.Method = method
+		c.MethodVal = service.ServiceVal
 		c.MethodTyp = mTyp
+		c.ArgTypes  = j.ParseMethodArgsTypes(mTyp)
 		c.MethodName = service.ServerName + `.` + name
 		if j.judgeMethodIsExist(c.MethodName) {
 			fmt.Errorf("service of method already register : %s", c.MethodName)
@@ -84,6 +86,26 @@ func (j *JsonRpcService) reflectCallback(service Service) (bool) {
 }
 
 /**
+ *get method of args types
+ */
+
+func (j *JsonRpcService) ParseMethodArgsTypes(mTyp reflect.Type)([]reflect.Type){
+	  size := mTyp.NumIn()
+
+	  if size < 2 {
+	  	return  nil
+	  }
+
+      argsTyp := make([]reflect.Type,size-1)
+	  for i := 1;i < size;i++ {
+	  	 argsTyp[i-1] = mTyp.In(i)
+
+	  }
+	  return argsTyp
+
+}
+
+/**
  *handle json rpc request
  */
 
@@ -96,23 +118,29 @@ func (j *JsonRpcService) ServerHandleRequest(json JsonRpcIf) {
 		return
 	}
 
-	callback,err := j.CheckRpcRequestHeaders(req[0])
+	callback, err := j.CheckRpcRequestHeaders(req[0])
 
 	if err != nil {
 		json.WriteJsonRpcResponse(json.CreateExceptionResponse(req[0].Id, -32600, err))
 		return
 	}
 
-	args := j.ParseRpcRequestArgument(req[0].Params)
+	args, err := json.ParseRequestArguments(callback.ArgTypes,req[0].Params)
 
-	resp, err := j.CallMethod(callback,args)
+	if err != nil {
+		json.WriteJsonRpcResponse(json.CreateExceptionResponse(req[0].Id, -32602, err))
+		return
+
+	}
+	args = append(args,callback.MethodVal)
+	resp, err := j.CallMethod(callback, args)
 
 	if err != nil {
 		json.WriteJsonRpcResponse(json.CreateExceptionResponse(req[0].Id, -32601, err))
 		return
 	}
 
-	json.WriteJsonRpcResponse(json.CreateSuccessResponse(req[0].Id,resp))
+	json.WriteJsonRpcResponse(json.CreateSuccessResponse(req[0].Id, resp))
 }
 
 /**
@@ -163,7 +191,9 @@ func (j *JsonRpcService) ParseRpcRequestArgument(params []interface{}) ([]reflec
  *call method
  */
 func (j *JsonRpcService) CallMethod(method *Callback, args []reflect.Value) (interface{}, error) {
-
+	fmt.Println(j.services,j.callbacks)
+	fmt.Println(args)
+	fmt.Println("args size :",method.Method.Type.NumIn())
 	returnVal := method.Method.Func.Call(args)
 
 	if len(returnVal) == 0 {

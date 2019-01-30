@@ -1,8 +1,12 @@
 package json_rpc
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
+	"reflect"
+	"errors"
 )
 
 /**
@@ -13,7 +17,7 @@ type JsonRpcRequest struct {
 	Id      interface{}   `json:"id"`
 	JsonRpc string        `json:"jsonrpc"`
 	Method  string        `json:"method"`
-	Params  []interface{} `json:"params"`
+	Params  interface{} `json:"params"`
 }
 
 /**
@@ -91,6 +95,55 @@ func (j *JsonRpc) parseJsonPrcRequestHead(data json.RawMessage) ([]JsonRpcReques
 
 	return []JsonRpcRequest{request}, nil
 
+}
+
+func (j *JsonRpc) ParseRequestArguments(argTypes []reflect.Type, params interface{}) ([]reflect.Value,error) {
+	if args, ok := params.(json.RawMessage); !ok {
+		return nil, errors.New("Invalid params supplied")
+	} else {
+		return j.parsePositionalArguments(args, argTypes)
+	}
+}
+
+func (j *JsonRpc)parsePositionalArguments(rawArgs json.RawMessage, types []reflect.Type) ([]reflect.Value, error) {
+	// Read beginning of the args array.
+
+
+	dec := json.NewDecoder(bytes.NewReader(rawArgs))
+
+	if tok, _ := dec.Token(); tok != json.Delim('[') {
+		return nil, errors.New("non-array args")
+	}
+	// Read args.
+
+	args := make([]reflect.Value, 0)
+	for i := 0; dec.More(); i++ {
+		if i >= len(types) {
+			return nil, errors.New(fmt.Sprintf("too many arguments, want at most %d", len(types)))
+		}
+		argval := reflect.New(types[i])
+		if err := dec.Decode(argval.Interface()); err != nil {
+			return nil, errors.New(fmt.Sprintf("invalid argument %d: %v", i, err))
+		}
+		if argval.IsNil() && types[i].Kind() != reflect.Ptr {
+			return nil, errors.New(fmt.Sprintf("missing value for required argument %d", i))
+		}
+		args = append(args, argval.Elem())
+	}
+
+	// Read end of args array.
+	if _, err := dec.Token(); err != nil {
+		return nil, err
+	}
+	// Set any missing args to nil.
+	for i := len(args); i < len(types); i++ {
+		if types[i].Kind() != reflect.Ptr {
+			return nil, errors.New(fmt.Sprintf("missing value for required argument %d", i))
+		}
+		args = append(args, reflect.Zero(types[i]))
+	}
+
+	return args, nil
 }
 
 /**
