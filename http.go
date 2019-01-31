@@ -23,6 +23,9 @@ type httpReaderWriterAndCloser struct {
 	 io.Closer
 }
 
+/**
+ *http
+ */
 func (j *JsonRpcService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	code, msg := j.CheckRequest(r)

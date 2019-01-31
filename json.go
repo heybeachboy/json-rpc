@@ -58,6 +58,7 @@ type JsonRpc struct {
 	JsonDecode func(v interface{}) error
 	JsonEncode func(v interface{}) error
 	Rw         io.ReadWriteCloser
+	IsMulti    bool // is multi unit
 }
 
 /**
@@ -65,7 +66,7 @@ type JsonRpc struct {
  */
 
 func NewJsonRpc(io *httpReaderWriterAndCloser) (*JsonRpc) {
-	return &JsonRpc{json.NewDecoder(io).Decode, json.NewEncoder(io).Encode, io}
+	return &JsonRpc{json.NewDecoder(io).Decode, json.NewEncoder(io).Encode, io,false}
 
 }
 
@@ -113,6 +114,8 @@ func (j *JsonRpc)parsePositionalArguments(rawArgs json.RawMessage, types []refle
 
 
 	dec := json.NewDecoder(bytes.NewReader(rawArgs))
+
+
 
 	if tok, _ := dec.Token(); tok != json.Delim('[') {
 		return nil, errors.New("non-array args")
